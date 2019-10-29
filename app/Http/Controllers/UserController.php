@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Auth;
 
 class UserController extends Controller
 {
@@ -49,7 +50,7 @@ class UserController extends Controller
 			 'pilihruang'	=> $pilihruang,
 			 'pilihpetugas'	=> $pilihpetugas]);
 
-		return view('user.vupinjam');
+// 		return view('user.vupinjam');
 	}
 	// END FORM PINJAM
 
@@ -66,10 +67,19 @@ class UserController extends Controller
 			'id_ruang'		=> $request->pilihruang,
 			'id_admin'		=> $request->pilihpetugas
 		]);
+        $kuranginventaris = ModelInventaris::where('id_inventaris','=',$request->pilihbarang)->firstOrFail();
+        $kuranginventaris->stok = $kuranginventaris->stok - $request->kuantitas;
+        $kuranginventaris->save();
 
 		return redirect('/user')->with('sukses', "Proses peminjaman berhasil!");
 	}
+//     public function formpengembalian(Request $request){
+//     $peminjaman = DB::table('pengembalian')->join('user','user.id_user','=','peminjaman.id_user')
+                                           
+//     }
 	// END PROSES PINJAM
+    
+    
 
 	// REGISTRASI
 	public function registrasi()
